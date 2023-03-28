@@ -1,5 +1,4 @@
-
-.ex-container{
+.ex-container {
     width: 300px;
     height: 375px;
     background-color: red;
@@ -10,46 +9,79 @@
     font-family: 'Roboto Slab', serif;
 }
 
-.ex-header{
+.ex-header {
     text-align: end;
 }
 
-.ex-city{
-    font-size: 2.1rem;
-    margin: 8px 0px 0px 0px;
-    color: #ffe373;
+.ex-city-select {
+    border: none;
+    background-color: rgba(75, 92, 99, 0.67);
+    color: white;
 }
 
-.ex-settings{
+.ex-city-select::-webkit-scrollbar {
+    display: flex;
+    flex-direction: column;
+    width: 5px;
+    overflow: auto;
+    height: 10px;
+}
+
+.ex-city-select::-webkit-scrollbar-thumb {
+    background-color: rgba(75, 92, 99, 0.67);
+}
+
+.ex-city-select-item {
+    border: none;
+    background-color: rgba(75, 92, 99, 0.67);
+    color: white;
+}
+
+.ex-city-save {
     margin: none;
     font-size: 1rem;
     color: #ffe373;
     cursor: pointer;
 }
 
-.main-title{
+
+.ex-city {
+    font-size: 2.1rem;
+    margin: 8px 0px 0px 0px;
+    color: #ffe373;
+}
+
+.ex-settings {
+    margin: none;
+    font-size: 1rem;
+    color: #ffe373;
+    cursor: pointer;
+}
+
+.main-title {
     text-align: center;
 }
-.main-timer{
+
+.main-timer {
     text-align: center;
     font-size: 1.1rem;
     font-weight: bold;
     color: white;
 }
 
-.time-list{
+.time-list {
     font-size: 1.3rem;
     font-weight: bold;
 }
 
-.main-hr{
+.main-hr {
     border: 1px solid #ffe373;
     opacity: 0.8;
 }
 
-.ex-main{
+.ex-main {
     width: 80%;
     height: 75%;
-    background-color: rgba(75, 92, 99,0.67);
+    background-color: rgba(75, 92, 99, 0.67);
     border-radius: 2px;
 }

@@ -1,59 +1,11 @@
-const fetchData = async () => {
-    // div variables
-    const listDiv = document.querySelector('.time-list');
-    const infoDiv = document.querySelector('.ex-timer');
-    const cityDiv = document.querySelector('.ex-city');
-    // variables
-    const now = new Date();
-    const city = "Ankara";
-    const maxDay = 3
-    const nowDate = `${now.getFullYear()}-${now.getMonth() + 1 < 10 ? `0${now.getMonth() + 1}` : `${now.getMonth() + 1}`}-${now.getDate() < 10 ? `0${now.getDate()}` : `${now.getDate()}`}`
-    // req 
-    const options = {
-        "method": "GET",
-        "headers": {
-            "content-type": "application/json",
-        }
-    };
-    const res = await fetch(`https://namaz-vakti.vercel.app/api/timesFromPlace?country=Turkey&region=${city}&city=${city}&date=${nowDate}&days=${maxDay}&timezoneOffset=180`, options);
-    const record = await res.json();
+const settingsButton = document.querySelector('.ex-settings');
+const cityList = document.querySelector('.ex-city-select');
+const saveButton = document.querySelector('.ex-city-save');
+const listDiv = document.querySelector('.time-list');
+const infoDiv = document.querySelector('.ex-timer');
+const cityDiv = document.querySelector('.ex-city');
 
-    // change city
-    cityDiv.textContent = record.place.city;
 
-    let time = record.times[`${now.getFullYear()}-${now.getMonth() + 1 < 10 ? `0${now.getMonth() + 1}` : `${now.getMonth() + 1}`}-${now.getDate() < 10 ? `0${now.getDate()}` : `${now.getDate()}`}`]
-    checkTime(now, time, infoDiv)
-
-    // // change info
-    setInterval(() => {
-        const nowtime = new Date();
-        let time = record.times[`${nowtime.getFullYear()}-${nowtime.getMonth() + 1 < 10 ? `0${nowtime.getMonth() + 1}` : `${nowtime.getMonth() + 1}`}-${nowtime.getDate() < 10 ? `0${nowtime.getDate()}` : `${nowtime.getDate()}`}`]
-        checkTime(nowtime, time, infoDiv);
-    }, 1000)
-
-    // list days
-    let day_list = generateDayList(2);
-    day_list.map((day, index) => {
-        console.log(index)
-        let time = `${now.getFullYear()}-${now.getMonth() + 1 < 10 ? `0${now.getMonth() + 1}` : `${now.getMonth() + 1}`}-${now.getDate() < 10 ? `0${now.getDate()}` : `${now.getDate()}`}`
-        let iftar = record.times[day][4];
-        let sahur = record.times[day][0];
-        let tr = document.createElement('tr');
-        let datetb = document.createElement('td');
-        datetb.innerHTML = `${now.getDate() + index}/${now.getMonth() + 1 < 10 ? `0${now.getMonth() + 1}` : `${now.getMonth() + 1}`}`;
-        let akşamtb = document.createElement('td');
-        akşamtb.innerHTML = iftar;
-        let imsaktb = document.createElement('td');
-        imsaktb.innerHTML = sahur;
-        tr.appendChild(datetb);
-        tr.appendChild(akşamtb);
-        tr.appendChild(imsaktb);
-        listDiv.appendChild(tr)
-
-    })
-}
-
-fetchData();
 
 // generate daylist name
 const generateDayList = (max) => {
@@ -99,3 +51,129 @@ const checkTime = (nowtime, time, infoDiv) => {
 
     }
 }
+
+const addCities = async (slctCity) => {
+    const selectDiv = document.querySelector('.ex-city-select');
+    let res = await fetch('./cities.json');
+    let cities = await res.json()
+    for (let city of cities) {
+        let cityOP = document.createElement('option');
+        cityOP.innerText = city;
+        cityOP.className = "ex-city-select-item";
+        cityOP.value = city;
+
+        if (slctCity == city) {
+            cityOP.setAttribute('selected', true);
+            console.log('sa')
+        }
+
+        selectDiv.appendChild(cityOP);
+    }
+}
+
+const loadData = (data, isFirst = true) => {
+    const nowDate = new Date();
+
+    cityDiv.textContent = data.place.city;
+
+    if (!isFirst) {
+        listDiv.innerHTML = ' ';
+        infoDiv.innerHTML = ' ';
+
+    }
+
+
+
+    let day_list = generateDayList(2);
+    day_list.map((day, index) => {
+        console.log(index)
+        let time = `${nowDate.getFullYear()}-${nowDate.getMonth() + 1 < 10 ? `0${nowDate.getMonth() + 1}` : `${nowDate.getMonth() + 1}`}-${nowDate.getDate() < 10 ? `0${nowDate.getDate()}` : `${nowDate.getDate()}`}`
+        let iftar = data.times[day][4];
+        let sahur = data.times[day][0];
+        let tr = document.createElement('tr');
+        let datetb = document.createElement('td');
+        datetb.innerHTML = `${nowDate.getDate() + index}/${nowDate.getMonth() + 1 < 10 ? `0${nowDate.getMonth() + 1}` : `${nowDate.getMonth() + 1}`}`;
+        let akşamtb = document.createElement('td');
+        akşamtb.innerHTML = iftar;
+        let imsaktb = document.createElement('td');
+        imsaktb.innerHTML = sahur;
+        tr.appendChild(datetb);
+        tr.appendChild(akşamtb);
+        tr.appendChild(imsaktb);
+        listDiv.appendChild(tr)
+
+    })
+
+
+    setInterval(() => {
+        const nowtime = new Date();
+        let time = data.times[`${nowtime.getFullYear()}-${nowtime.getMonth() + 1 < 10 ? `0${nowtime.getMonth() + 1}` : `${nowtime.getMonth() + 1}`}-${nowtime.getDate() < 10 ? `0${nowtime.getDate()}` : `${nowtime.getDate()}`}`]
+        checkTime(nowtime, time, infoDiv);
+    }, 1000)
+}
+
+
+
+
+settingsButton.addEventListener('click', (e) => {
+    if (localStorage.getItem("isSettings")) {
+        if (localStorage.getItem('isSettings') == "open") {
+            cityList.classList.add("d-none");
+            saveButton.classList.add("d-none");
+            localStorage.setItem('isSettings', "close");
+        } else {
+            cityList.classList.remove("d-none");
+            saveButton.classList.remove("d-none");
+            localStorage.setItem('isSettings', "open");
+        }
+    }
+});
+
+saveButton.addEventListener('click', (e) => {
+    if (localStorage.getItem("isSettings")) {
+        if (localStorage.getItem('isSettings') == "open") {
+            localStorage.setItem('city', cityList.value);
+            fetchData(localStorage.getItem('city'), 3).then(reqData => {
+                loadData(reqData, false);
+            });
+
+        }
+    }
+});
+
+const fetchData = async (city, maxDay) => {
+    const now = new Date();
+    addCities(localStorage.getItem('city'));
+
+    const nowDateText = `${now.getFullYear()}-${now.getMonth() + 1 < 10 ? `0${now.getMonth() + 1}` : `${now.getMonth() + 1}`}-${now.getDate() < 10 ? `0${now.getDate()}` : `${now.getDate()}`}`
+    // req 
+    const options = {
+        "method": "GET",
+        "headers": {
+            "content-type": "application/json",
+        }
+    };
+    const res = await fetch(`https://namaz-vakti.vercel.app/api/timesFromPlace?country=Turkey&region=${city}&city=${city}&date=${nowDateText}&days=${maxDay}&timezoneOffset=180`, options);
+    const record = await res.json();
+
+    return record;
+}
+
+
+window.onload = function async() {
+    if (!localStorage.getItem('isSettings')) {
+        localStorage.setItem('isSettings', 'close');
+    }
+    if (!localStorage.getItem('city')) {
+        localStorage.setItem('city', 'Ankara');
+    }
+
+    fetchData(localStorage.getItem('city'), 3).then(
+        reqData => {
+            loadData(reqData, true);
+        })
+
+}
+
+
+

@@ -23,8 +23,18 @@
 
 <body>
     <div class="row ex-container d-flex justify-content-center">
-        <div class="ex-header mt-2 me-3">
-            <span class="ex-settings"><i class="fa-solid fa-gear"></i></span>
+        <div class="ex-header row justify-content-center d-flex align-items-center">
+            <div class="col-10 d-flex justify-content-center align-items-center">
+                <select class="form-select form-select-sm ex-city-select d-none" aria-label=".form-select-sm example">
+                   
+                </select>
+
+                <span class="ex-city-save text-center ms-2 d-none">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                </span>
+                
+            </div>
+            <span class="ex-settings col text-end"><i class="fa-solid fa-gear"></i></span>
         </div>
 
         <div class="ex-main">
@@ -39,15 +49,15 @@
 
                 <table class="table text-white">
                     <thead>
-                      <tr class="fst-italic">
-                        <th scope="col">Tarih</th>
-                        <th scope="col">İftar</th>
-                        <th scope="col">İmsak</th>
-                      </tr>
+                        <tr class="fst-italic">
+                            <th scope="col">Tarih</th>
+                            <th scope="col">İftar</th>
+                            <th scope="col">İmsak</th>
+                        </tr>
                     </thead>
                     <tbody class="time-list">
                     </tbody>
-                  </table>
+                </table>
             </div>
         </div>
 
