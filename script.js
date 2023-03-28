@@ -27,7 +27,7 @@ const generateDayList = (max) => {
 }
 
 // check time
-const checkTime = (nowtime, time, infoDiv) => {
+const checkTime = (nowtime, data, time, infoDiv) => {
     let imsak = time[0].split(":").map(item => parseInt(item));
     let iftar = time[4].split(":").map(item => parseInt(item));
 
@@ -37,7 +37,7 @@ const checkTime = (nowtime, time, infoDiv) => {
         let now_count = (nowtime.getHours() * 60) + nowtime.getMinutes();
         if (iftar[0] == nowtime.getHours() && nowtime.getMinutes() <= iftar[1]) {
             let text = `İftara ${iftar[1] - nowtime.getMinutes()} dakika kaldı`;
-            infoDiv.text = text;
+            infoDiv.innerHTML = text;
         }
         else if (iftar[0] > nowtime.getHours()) {
             let kalan = iftar_count - now_count;
@@ -45,11 +45,39 @@ const checkTime = (nowtime, time, infoDiv) => {
             let mn = kalan % 60;
             let text = `İftara ${hour} saat ${mn} dakika kaldı`;
             infoDiv.innerHTML = text;
+        } else {
+            tmrrwDataLoad(data, nowtime, infoDiv);
         }
 
+    } else if (nowtime.getHours() < imsak[0]) {
+        let sahur_count = (imsak[0] * 60) + imsak[1];
+        let now_count = (nowtime.getHours() * 60) + nowtime.getMinutes();
+        if (imsak[0] == nowtime.getHours() && nowtime.getMinutes() <= imsak[1]) {
+            let text = `Sahura ${imsak[1] - nowtime.getMinutes()} dakika kaldı`;
+            infoDiv.text = text;
+        }
+        else if (imsak[0] > nowtime.getHours()) {
+            let kalan = sahur_count - now_count;
+            let hour = parseInt(kalan / 60);
+            let mn = kalan % 60;
+            let text = `Sahura ${hour} saat ${mn} dakika kaldı`;
+            infoDiv.innerHTML = text;
+        }
     } else {
-
+        tmrrwDataLoad(data, nowtime, infoDiv);
     }
+}
+
+const tmrrwDataLoad = (data, nowtime, infoDiv) => {
+    let time = data.times[`${nowtime.getFullYear()}-${nowtime.getMonth() + 1 < 10 ? `0${nowtime.getMonth() + 1}` : `${nowtime.getMonth() + 1}`}-${nowtime.getDate() + 1 < 10 ? `0${nowtime.getDate() + 1}` : `${nowtime.getDate() + 1}`}`]
+    let imsaktmr = time[0].split(":").map(item => parseInt(item));
+    console.log(imsaktmr)
+    let sahur_count = (imsaktmr[0] * 60) + imsaktmr[1];
+    let now_count = ((24 - nowtime.getHours()) * 60) + nowtime.getMinutes();
+    let hour = parseInt((sahur_count + now_count) / 60)
+    let mn = (Math.abs(sahur_count - now_count) % 60);
+    let text = `Sahura ${hour} saat ${mn} dakika kaldı`;
+    infoDiv.innerHTML = text;
 }
 
 const addCities = async (slctCity) => {
@@ -71,25 +99,41 @@ const addCities = async (slctCity) => {
     }
 }
 
-const loadData = (data, isFirst = true) => {
+const loadData = async(isFirst = true,city,maxDay) => {
     const nowDate = new Date();
 
-    cityDiv.textContent = data.place.city;
+    const now = new Date();
+    addCities(localStorage.getItem('city'));
+
+    const nowDateText = `${now.getFullYear()}-${now.getMonth() + 1 < 10 ? `0${now.getMonth() + 1}` : `${now.getMonth() + 1}`}-${now.getDate() < 10 ? `0${now.getDate()}` : `${now.getDate()}`}`
+    // req 
+    const options = {
+        "method": "GET",
+        "headers": {
+            "content-type": "application/json",
+        }
+    };
+    const res = await fetch(`https://namaz-vakti.vercel.app/api/timesFromPlace?country=Turkey&region=${city}&city=${city}&date=${nowDateText}&days=${maxDay}&timezoneOffset=180`, options);
+    const record = await res.json();
+    localStorage.setItem('record', JSON.stringify(record));
+
+
+    cityDiv.textContent = record.place.city;
 
     if (!isFirst) {
         listDiv.innerHTML = ' ';
         infoDiv.innerHTML = ' ';
 
     }
-
-
+    let time = record.times[`${nowDate.getFullYear()}-${nowDate.getMonth() + 1 < 10 ? `0${nowDate.getMonth() + 1}` : `${nowDate.getMonth() + 1}`}-${nowDate.getDate() < 10 ? `0${nowDate.getDate()}` : `${nowDate.getDate()}`}`]
+    checkTime(nowDate, record, time, infoDiv);
 
     let day_list = generateDayList(2);
     day_list.map((day, index) => {
         console.log(index)
         let time = `${nowDate.getFullYear()}-${nowDate.getMonth() + 1 < 10 ? `0${nowDate.getMonth() + 1}` : `${nowDate.getMonth() + 1}`}-${nowDate.getDate() < 10 ? `0${nowDate.getDate()}` : `${nowDate.getDate()}`}`
-        let iftar = data.times[day][4];
-        let sahur = data.times[day][0];
+        let iftar = record.times[day][4];
+        let sahur = record.times[day][0];
         let tr = document.createElement('tr');
         let datetb = document.createElement('td');
         datetb.innerHTML = `${nowDate.getDate() + index}/${nowDate.getMonth() + 1 < 10 ? `0${nowDate.getMonth() + 1}` : `${nowDate.getMonth() + 1}`}`;
@@ -104,15 +148,16 @@ const loadData = (data, isFirst = true) => {
 
     })
 
-
-    setInterval(() => {
-        const nowtime = new Date();
-        let time = data.times[`${nowtime.getFullYear()}-${nowtime.getMonth() + 1 < 10 ? `0${nowtime.getMonth() + 1}` : `${nowtime.getMonth() + 1}`}-${nowtime.getDate() < 10 ? `0${nowtime.getDate()}` : `${nowtime.getDate()}`}`]
-        checkTime(nowtime, time, infoDiv);
-    }, 1000)
 }
 
 
+setInterval(() => {
+    const nowtime = new Date();
+    let data = JSON.parse(localStorage.getItem('record'));
+    console.log(data)
+    let time = data.times[`${nowtime.getFullYear()}-${nowtime.getMonth() + 1 < 10 ? `0${nowtime.getMonth() + 1}` : `${nowtime.getMonth() + 1}`}-${nowtime.getDate() < 10 ? `0${nowtime.getDate()}` : `${nowtime.getDate()}`}`]
+    checkTime(nowtime, data, time, infoDiv);
+}, 50000)
 
 
 settingsButton.addEventListener('click', (e) => {
@@ -133,31 +178,11 @@ saveButton.addEventListener('click', (e) => {
     if (localStorage.getItem("isSettings")) {
         if (localStorage.getItem('isSettings') == "open") {
             localStorage.setItem('city', cityList.value);
-            fetchData(localStorage.getItem('city'), 3).then(reqData => {
-                loadData(reqData, false);
-            });
+            loadData(false,localStorage.getItem('city'),3);
 
         }
     }
 });
-
-const fetchData = async (city, maxDay) => {
-    const now = new Date();
-    addCities(localStorage.getItem('city'));
-
-    const nowDateText = `${now.getFullYear()}-${now.getMonth() + 1 < 10 ? `0${now.getMonth() + 1}` : `${now.getMonth() + 1}`}-${now.getDate() < 10 ? `0${now.getDate()}` : `${now.getDate()}`}`
-    // req 
-    const options = {
-        "method": "GET",
-        "headers": {
-            "content-type": "application/json",
-        }
-    };
-    const res = await fetch(`https://namaz-vakti.vercel.app/api/timesFromPlace?country=Turkey&region=${city}&city=${city}&date=${nowDateText}&days=${maxDay}&timezoneOffset=180`, options);
-    const record = await res.json();
-
-    return record;
-}
 
 
 window.onload = function async() {
@@ -167,11 +192,7 @@ window.onload = function async() {
     if (!localStorage.getItem('city')) {
         localStorage.setItem('city', 'Ankara');
     }
-
-    fetchData(localStorage.getItem('city'), 3).then(
-        reqData => {
-            loadData(reqData, true);
-        })
+    loadData(false,localStorage.getItem('city'),3);
 
 }
 

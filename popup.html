@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- font-->
+    <!-- Google Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap" rel="stylesheet">
@@ -18,35 +18,39 @@
         integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
     <!-- CSS -->
     <link rel="stylesheet" href="./main.css">
-    <title>Document</title>
+    <title>Coder By ErsaGun</title>
 </head>
 
 <body>
     <div class="row ex-container d-flex justify-content-center">
+        <!-- Header -->
         <div class="ex-header row justify-content-center d-flex align-items-center">
             <div class="col-10 d-flex justify-content-center align-items-center">
+
                 <select class="form-select form-select-sm ex-city-select d-none" aria-label=".form-select-sm example">
-                   
                 </select>
 
                 <span class="ex-city-save text-center ms-2 d-none">
                     <i class="fa-solid fa-floppy-disk"></i>
                 </span>
-                
+
             </div>
             <span class="ex-settings col text-end"><i class="fa-solid fa-gear"></i></span>
         </div>
 
+        <!-- Body -->
         <div class="ex-main">
+
             <div class="main-title">
                 <p class="ex-city"></p>
             </div>
-            <div class="main-timer">
+            <div class="main-timer" id="main-timer">
                 <p class="fst-italic ex-timer m-0"></p>
             </div>
-            <hr class="main-hr m-0">
-            <div class="main-list">
 
+            <hr class="main-hr m-0">
+
+            <div class="main-list">
                 <table class="table text-white">
                     <thead>
                         <tr class="fst-italic">
@@ -59,15 +63,24 @@
                     </tbody>
                 </table>
             </div>
+
         </div>
 
-        <script src="./script.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
-            integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3"
-            crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.min.js"
-            integrity="sha384-heAjqF+bCxXpCWLa6Zhcp4fu20XoNIA98ecBC1YkdXhszjoejr5y9Q77hIrv8R9i"
-            crossorigin="anonymous"></script>
+        <!-- Report Bugs Div -->
+        <div class="w-100 text-end me-3 ">
+            <a href="https://twitter.com/FatihErsaGun"><i class="fa-solid fa-bug text-white fs-6"></i></a>
+        </div>
+        
+    </div>
+
+    <!-- Javascript -->
+    <script src="./script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+        integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.min.js"
+        integrity="sha384-heAjqF+bCxXpCWLa6Zhcp4fu20XoNIA98ecBC1YkdXhszjoejr5y9Q77hIrv8R9i"
+        crossorigin="anonymous"></script>
 </body>
 
 </html>
