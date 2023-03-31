@@ -73,9 +73,9 @@ const tmrrwDataLoad = (data, nowtime, infoDiv) => {
     let imsaktmr = time[0].split(":").map(item => parseInt(item));
     console.log(imsaktmr)
     let sahur_count = (imsaktmr[0] * 60) + imsaktmr[1];
-    let now_count = ((24 - nowtime.getHours()) * 60) + nowtime.getMinutes();
+    let now_count = (1440 - ((nowtime.getHours() * 60) + nowtime.getMinutes()));
     let hour = parseInt((sahur_count + now_count) / 60)
-    let mn = (Math.abs(sahur_count - now_count) % 60);
+    let mn = (Math.abs(sahur_count + now_count) % 60);
     let text = `Sahura ${hour} saat ${mn} dakika kaldı`;
     infoDiv.innerHTML = text;
 }
@@ -99,7 +99,7 @@ const addCities = async (slctCity) => {
     }
 }
 
-const loadData = async(isFirst = true,city,maxDay) => {
+const loadData = async (isFirst = true, city, maxDay) => {
     const nowDate = new Date();
 
     const now = new Date();
@@ -178,7 +178,7 @@ saveButton.addEventListener('click', (e) => {
     if (localStorage.getItem("isSettings")) {
         if (localStorage.getItem('isSettings') == "open") {
             localStorage.setItem('city', cityList.value);
-            loadData(false,localStorage.getItem('city'),3);
+            loadData(false, localStorage.getItem('city'), 3);
 
         }
     }
@@ -192,9 +192,38 @@ window.onload = function async() {
     if (!localStorage.getItem('city')) {
         localStorage.setItem('city', 'Ankara');
     }
-    loadData(false,localStorage.getItem('city'),3);
+    loadData(false, localStorage.getItem('city'), 3);
 
 }
 
 
 
+/*
+                                                                     
+                               .@                               
+                           @@@ @@. @@@                          
+                   &@@@@    *@@@@@@@.    @@@@.                  
+                @@@@@@       .@@@@@        @@@@(                
+              @@@@@@          &@@@           @@@@@              
+               .@@@@           @@@         ,@@@@@               
+                  /@@@@@       @@@       @@@@@                  
+                     @@@@@     @@@    &@@@@.                    
+                       @@@@@(  @@@  @@@@@                       
+                          @@@@@@@@@@@@@                         
+                            @@@@@@@,                            
+                             @@@@@@@.                           
+                           @@@@@@@@@@@@                         
+                        @@@@# @@@@ .@@@@&                       
+                     @@@@@    &@@@    @@@@@#                    
+                  ,@@@@       ,@@@       @@@@@                  
+                @@@@          @@@@         (@@@@@               
+              /@@@@            @@@          %@@@@@@             
+                @@@@@         @@@@          @@@@@               
+                  @@@@@/      &@@@      @@@@@@                  
+                    .@@@@@     @@@,   @@@@@@                    
+                       #@@@@@@,@@@ @@@@@%                       
+                          @@@@@@@@@@@@@                         
+                            @@@@@@@@                            
+                               @@@                              
+
+*/
